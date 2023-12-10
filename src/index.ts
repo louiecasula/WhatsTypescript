@@ -20,12 +20,11 @@ form.onsubmit = async (event) => {
 
     const data = await response.json();
 
-    // searchedWord.innerHTML = `${text}`; // display the word
-
-    outputContainer.innerHTML = `<p>${data.definitions}</p>`;
+    outputContainer.innerHTML = `<h1>${text} </h1><h5>${data[0].phonetic}</h5>
+                                  <p>${data[0].meanings[0].definitions[0].definition}</p>`;
   } catch(error) {
     console.error('Error fetching data:', error);
-    outputContainer.innerHTML = `Can't find info on that word`;
+    outputContainer.innerHTML = `Can't find info on ${text}`;
   }
 
 };
