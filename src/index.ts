@@ -1,17 +1,21 @@
 // Import stylesheets
-import './style.css';
+// import './dist/style.css';
 
 
-const form = document.querySelector('#defineform') as HTMLFormElement;
-const searchedWord = document.querySelector('#searched-word') as HTMLHeadingElement;
+const form: HTMLFormElement = document.querySelector('#defineform')!;
+const searchedWord: HTMLHeadingElement = document.querySelector('#searched-word')!;
+
+searchedWord.innerHTML = `Word: apple <br>
+Definition: that red fruit wit da worm in it`;
 
 
-form.onsubmit = () => {
-  const formData = new FormData(form);
 
-  console.log(formData);
-  const text = formData.get('defineword') as string;
-  console.log(text);
-  searchedWord.innerHTML = `${text}`;
-  return false; // prevent reload
-};
+// form.onsubmit = () => {
+//   const formData = new FormData(form);
+
+//   console.log(formData);
+//   const text = formData.get('defineword') as string;
+//   console.log(text);
+//   searchedWord.innerHTML = `${text}`;
+//   return false; // prevent reload
+// };
