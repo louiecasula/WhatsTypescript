@@ -3,19 +3,29 @@
 
 
 const form: HTMLFormElement = document.querySelector('#defineform')!;
-const searchedWord: HTMLHeadingElement = document.querySelector('#searched-word')!;
+const outputContainer: HTMLDivElement = document.querySelector('#output-container')!;
 
-searchedWord.innerHTML = `Word: apple <br>
-Definition: that red fruit wit da worm in it`;
+outputContainer.innerHTML = `<h2>Enter a word above to learn more about it</h2>`;
 
+form.onsubmit = async (event) => {
+  event.preventDefault(); // prevent reload
 
+  const formData = new FormData(form);
+  const text = formData.get('defineword') as string;
 
-// form.onsubmit = () => {
-//   const formData = new FormData(form);
+  outputContainer.innerHTML = `<h1>${text}</h1>`; // display the word
 
-//   console.log(formData);
-//   const text = formData.get('defineword') as string;
-//   console.log(text);
-//   searchedWord.innerHTML = `${text}`;
-//   return false; // prevent reload
-// };
+  try {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${text}`)
+
+    const data = await response.json();
+
+    // searchedWord.innerHTML = `${text}`; // display the word
+
+    outputContainer.innerHTML = `<p>${data.definitions}</p>`;
+  } catch(error) {
+    console.error('Error fetching data:', error);
+    outputContainer.innerHTML = `Can't find info on that word`;
+  }
+
+};
