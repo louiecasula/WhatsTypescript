@@ -18,7 +18,7 @@ form.onsubmit = async (event) => {
   try {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${text}`)
 
-    const data: { word: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string; example?: string }[] }[] }[] = await response.json();
+    const data: { word: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string; example?: string; synonyms?: string[]; antonyms?: string[] }[] }[] }[] = await response.json();
 
     const wordData = data[0];
 
@@ -34,11 +34,34 @@ form.onsubmit = async (event) => {
           outputHTML += `<ul><li><em>${definition.example}</em></li></ul>`;
         }
 
-        outputHTML += `</li>`;
+        if (definition.synonyms != undefined && definition.synonyms.length > 0) {
+            outputHTML += `<ul><li><em>Synonyms:</em> ${definition.synonyms.join(', ')}</li></ul>`;
+        }
+
+        if (definition.antonyms != undefined && definition.antonyms.length > 0) {
+          outputHTML += `<ul><li><em>Antonyms:</em> ${definition.antonyms.join(', ')}</li></ul>`;
+        }
+        
       });
 
       outputHTML += `</ol>`;
     });
+
+    // Turns out, there are multiple words stored in each word's data
+      // Find a way to display the word data for each one
+      // data is stored inconsistently too
+        // Find a way to get things like synonyms & antonyms when they aren't under the definition
+      // Don't forget to add the etymology
+      // See if you can add mp3s for the pronunciation
+      // Also get multiple IPA variations if applicable
+
+    // if (wordData.meanings.synonyms != undefined && wordData.meanings.synonyms.length > 0) {
+    //   outputHTML += `<ul><li><em>Synonyms:</em> ${wordData.meanings.synonyms.join(', ')}</li></ul>`;
+    // }
+
+    // if (wordData.meanings.antonyms != undefined && wordData.meanings.antonyms.length > 0) {
+    //   outputHTML += `<ul><li><em>Antonyms:</em> ${wordData.meanings.antonyms.join(', ')}</li></ul>`;
+    // }
 
     outputContainer.innerHTML = outputHTML;
 
