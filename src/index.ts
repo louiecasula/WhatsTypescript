@@ -18,17 +18,23 @@ form.onsubmit = async (event) => {
   try {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${text}`)
 
-    const data: { word: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string }[] }[] }[] = await response.json();
+    const data: { word: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string; example?: string }[] }[] }[] = await response.json();
 
     const wordData = data[0];
 
-    let outputHTML = `<h1>${wordData.word}</h1><h5>${wordData.phonetic}</h5>`;
+    let outputHTML = `<h1>${wordData.word}</h1><h5>${wordData.phonetic}</h5><hr>`;
     
     wordData.meanings.forEach((meaning) => {
       outputHTML += `<p><strong>${meaning.partOfSpeech}</strong></p><ol>`;
 
       meaning.definitions.forEach((definition) => {
         outputHTML += `<li>${definition.definition}</li>`;
+
+        if (definition.example != undefined) {
+          outputHTML += `<ul><li><em>${definition.example}</em></li></ul>`;
+        }
+
+        outputHTML += `</li>`;
       });
 
       outputHTML += `</ol>`;
