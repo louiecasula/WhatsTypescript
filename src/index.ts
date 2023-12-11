@@ -18,15 +18,18 @@ form.onsubmit = async (event) => {
   try {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${text}`)
 
-    const data: { word: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string; example?: string; synonyms?: string[]; antonyms?: string[] }[] }[] }[] = await response.json();
+    const data: { word: string; origin?: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string; example?: string; synonyms?: string[]; antonyms?: string[] }[] }[] }[] = await response.json();
 
-    var wordData = data[0];
+    let wordData = data[0];
 
     let outputHTML = `<h1>${wordData.word}</h1><h5>${wordData.phonetic}</h5><hr>`;
 
     for (let i = 0; i < data.length; i++){
       wordData = data[i];
     
+      if (wordData.origin != undefined) {
+        outputHTML += `<>`
+      }
     
       wordData.meanings.forEach((meaning) => {
         outputHTML += `<p><strong>${meaning.partOfSpeech}</strong></p><ol>`;
@@ -52,7 +55,6 @@ form.onsubmit = async (event) => {
       });
 
       // Turns out, there are multiple words stored in each word's data
-        // Find a way to display the word data for each one
         // data is stored inconsistently too
           // Find a way to get things like synonyms & antonyms when they aren't under the definition
         // Don't forget to add the etymology
