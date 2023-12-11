@@ -13,18 +13,32 @@ form.onsubmit = async (event) => {
   const formData = new FormData(form);
   const text = formData.get('defineword') as string;
 
-  outputContainer.innerHTML = `<h1>${text}</h1>`; // display the word
+  outputContainer.innerHTML = `<h1>${text}</h1>`;
 
   try {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${text}`)
 
-    const data = await response.json();
+    const data: { word: string; phonetic: string; meanings: { partOfSpeech: string; definitions: { definition: string }[] }[] }[] = await response.json();
 
-    outputContainer.innerHTML = `<h1>${text} </h1><h5>${data[0].phonetic}</h5>
-                                  <p>${data[0].meanings[0].definitions[0].definition}</p>`;
+    const wordData = data[0];
+
+    let outputHTML = `<h1>${wordData.word}</h1><h5>${wordData.phonetic}</h5>`;
+    
+    wordData.meanings.forEach((meaning) => {
+      outputHTML += `<p><strong>${meaning.partOfSpeech}</strong></p><ol>`;
+
+      meaning.definitions.forEach((definition) => {
+        outputHTML += `<li>${definition.definition}</li>`;
+      });
+
+      outputHTML += `</ol>`;
+    });
+
+    outputContainer.innerHTML = outputHTML;
+
   } catch(error) {
     console.error('Error fetching data:', error);
-    outputContainer.innerHTML = `Can't find info on ${text}`;
+    outputContainer.innerHTML = `<h1>${text}</h1> <p>Can't find info on ${text}</p>`;
   }
 
 };
